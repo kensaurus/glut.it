@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name        SoundTake - SoundCloud Downloader
-// @namespace   http://soundtake.hol.es/
-// @version     0.6
-// @description SoundTake enables you to download musics from SoundCloud. This script will add a "Download" button for every SoundCloud track and playlist.
+// @namespace   Edited to download directly from mp3clan instead
+// @version     Edited by kenji
+// @description This script will add a "Download" button for every SoundCloud track and playlist.
 // @author      soundtake
 // @copyright   2014-2017, soundtake
 // @include     http://soundcloud.com/*
@@ -17,8 +17,8 @@
  * v2.3.1
  * https://github.com/uzairfarooq/arrive
  * MIT licensed
- *
  * Copyright (c) 2014-2016 Uzair Farooq
+ *
  */
 var Arrive = function(a, b, c) {
     "use strict";
@@ -285,7 +285,8 @@ console.info('Thanks for using SoundTake! :)');
             //btngroup.append('<button class=\'sc-sndtk-btn sc-button sc-button-download ' + button_size + ' sc-button-responsive\' title=\'Download this track with SoundTake\' onclick=\'window.open("http://soundtake.net/?utm_source=track&utm_campaign=download_btn&utm_medium=soundcloud&ver=' + versi + '#' + link + '", "_blank")\'>6) Download </button>');
 			//Customized button
 			link = d.find('span').text();
-			btngroup.append('<button class=\'sc-sndtk-btn sc-button sc-button-download ' + button_size + ' sc-button-responsive\' title=\'Download this track with mp3clan\' onclick=\'window.open("http://mp3clan.com/mp3/' + link + '.html' + '", "_blank")\'>6) Download </button>');
+			btngroup.append('<button class=\'sc-sndtk-btn sc-button sc-button-download ' + button_size + ' sc-button-responsive\' title=\'Download this track with 
+			\' onclick=\'window.open("http://mp3clan.com/mp3/' + link + '.html' + '", "_blank")\'>6) Download </button>');
         }
         jQ(e).leave('.sc-button-download', function() {
             jQ(e).unbindLeave();
