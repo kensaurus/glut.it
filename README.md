@@ -1,5 +1,6 @@
-Kenji Sakuramoto
-LinkedIn: https://www.linkedin.com/in/kenjisakuramoto
-Homepage: http://glut.it
+# Kenji Sakuramoto
+* * http://glut.it
 
-Learning to appreciate knowledge as I age.
+* * https://linkedin.com/kenjisakuramoto
+
+**Learning to appreciate knowledge as I age.
