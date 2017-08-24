@@ -1,0 +1,15 @@
+'kenjisakuramoto'
+'Delete all column with the name TITLE'
+
+Sub deleteTitle()
+Dim wsh As Worksheet
+Dim a As Range
+For Each wsh In ActiveWorkbook.Worksheets
+Do
+Set a = wsh.Rows(1).Find(What:="Title", LookIn:=xlValues, lookat:=xlPart)
+If Not a Is Nothing Then
+a.EntireColumn.Delete
+End If
+Loop While Not a Is Nothing
+Next wsh
+End Sub
