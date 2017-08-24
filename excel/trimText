@@ -1,0 +1,14 @@
+'kenjisakuramoto'
+'Trim all text - trailing white spaces'
+
+Sub trimText()
+Dim Rng As Range
+Dim WorkRng As Range
+On Error Resume Next
+xTitleId = "Trim"
+Set WorkRng = Application.Selection
+Set WorkRng = Application.InputBox("Range", xTitleId, WorkRng.Address, Type:=8)
+For Each Rng In WorkRng
+Rng.Value = VBA.LTrim(Rng.Value)
+Next
+End Sub
