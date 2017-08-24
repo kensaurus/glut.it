@@ -1,9 +1,9 @@
 '''
-@kenji-sakuramoto
-?scrape soundcloud & mixcloud plays
-?print out leftover plays needed for the order
-*place "scplays.csv" in same folder
-*1st column HTML, 2nd column current plays, 3rd column expected plays
+kenjisakuramoto
+scrape soundcloud & mixcloud plays
+print out the leftover plays needed for the order
+place "scplays.csv" in the same folder
+1st column HTML, 2nd column current plays, 3rd column expected plays
 '''
 
 #load modules
