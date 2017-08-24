@@ -1,0 +1,12 @@
+'kenjisakuramoto'
+'Refresh all pivot tables'
+
+Sub refreshPivot()
+Dim ws As Worksheet
+Dim pt As PivotTable
+For Each ws In ThisWorkbook.Worksheets
+For Each pt In ws.PivotTables
+pt.RefreshTable
+Next pt
+Next ws
+End Sub
