@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         mp3clan bitrate checker & cleaner
+// @name         mp3clan
 // @namespace    http://glut.it
-// @version      0.1
-// @description  remove ads, check bitrates.
+// @version      1
+// @description  Remove ads & check bitrates
 // @author       kenjisakuramoto
 // @match        http://mp3clan.com/*
 // @grant        none
