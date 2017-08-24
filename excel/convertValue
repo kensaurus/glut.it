@@ -1,0 +1,19 @@
+'kenjisakuramoto'
+'Convert all formula to value'
+
+Sub convertValue()
+Select Case MsgBox("You Can't Undo This Action. " & "Save Workbook First?", vbYesNoCancel, "Alert")
+Case Is = vbYes
+ThisWorkbook.Save
+Case Is = vbCancel
+Exit Sub
+End Select
+Dim wsh As Worksheet
+For Each wsh In ActiveWorkbook.Worksheets
+With wsh.UsedRange
+.Copy
+.PasteSpecial xlPasteValues
+End With
+Next wsh
+Application.CutCopyMode = False
+End Sub
