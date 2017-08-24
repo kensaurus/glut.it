@@ -1,0 +1,6 @@
+'kenjisakuramoto'
+'Delete all rows from row 3 from all worksheets'
+
+Private Sub deleteRow()
+Worksheets("Keywords").Rows(3 & ":" & Worksheets("Keywords").Rows.Count).Delete
+End Sub
