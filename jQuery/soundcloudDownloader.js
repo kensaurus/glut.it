@@ -1,6 +1,9 @@
 // ==UserScript==
-// @name        SoundCloud Downloader
-// @namespace   Create download buttons beneath track that links to mp3clan
+// @name        soundcloudDownloader
+// @namespace   http://glut.it
+// @version	1
+// @description Creates download links beneath soundcloud tracks to mp3clan
+// @author      kenjisakuramoto
 // @include     http://soundcloud.com/*
 // @include     https://soundcloud.com/*
 // @include     http://www.soundcloud.com/*
