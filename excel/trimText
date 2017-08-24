@@ -1,5 +1,5 @@
 'kenjisakuramoto'
-'Trim all text - trailing white spaces'
+'Trim all trailing white spaces'
 
 Sub trimText()
 Dim Rng As Range
