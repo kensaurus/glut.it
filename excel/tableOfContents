@@ -1,3 +1,6 @@
+'kenjisakuramoto'
+'Create table of contents on the first sheet'
+
 Sub tableOfContents()
 Dim i As Long
 On Error Resume Next
