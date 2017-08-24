@@ -1,5 +1,10 @@
-//kenjisakuramoto
-//Inject jQuery to the website
+// ==UserScript==
+// @name         injectjQuery
+// @namespace    http://glut.it
+// @version      1
+// @description  Inject jQuery into the website
+// @author       kenjisakuramoto
+// ==/UserScript==
 
 var jq = document.createElement('script');
 jq.src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js";
