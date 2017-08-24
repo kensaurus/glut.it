@@ -1,10 +1,6 @@
 // ==UserScript==
-// @name        SoundTake - SoundCloud Downloader
-// @namespace   Edited to download directly from mp3clan instead
-// @version     Edited by kenji
-// @description This script will add a "Download" button for every SoundCloud track and playlist.
-// @author      soundtake
-// @copyright   2014-2017, soundtake
+// @name        SoundCloud Downloader
+// @namespace   Create download buttons beneath track that links to mp3clan
 // @include     http://soundcloud.com/*
 // @include     https://soundcloud.com/*
 // @include     http://www.soundcloud.com/*
