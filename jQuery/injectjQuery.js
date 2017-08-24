@@ -1,5 +1,5 @@
-//@kenjisakuramoto
-//?Inject jQuery
+//kenjisakuramoto
+//Inject jQuery to the website
 
 var jq = document.createElement('script');
 jq.src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js";
