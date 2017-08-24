@@ -1,0 +1,35 @@
+'kenjisakuramoto'
+'Create a customer copy report for Glut It'
+'Remove formulas, delete TITLE column, delete ! sheet, color worksheet tab, save file'
+
+Sub customerCopy()
+Dim wsh As Worksheet
+Dim a As Range
+Application.DisplayAlerts = False
+client = Application.InputBox("Client Name", "Glut It", "")
+For Each wsh In ActiveWorkbook.Worksheets
+With wsh.UsedRange
+.Copy
+.PasteSpecial xlPasteValues
+End With
+Next wsh
+Application.CutCopyMode = False
+For Each wsh In ActiveWorkbook.Worksheets
+Do
+Set a = wsh.Rows(1).Find(What:="Title", LookIn:=xlValues, lookat:=xlPart)
+If Not a Is Nothing Then
+a.EntireColumn.Delete
+End If
+Loop While Not a Is Nothing
+Next wsh
+Sheets("!").Delete
+Sheets("Readme").Tab.ColorIndex = 3
+For Each wsh In ThisWorkbook.Worksheets
+If wsh.Name <> "Readme" Then
+wsh.Tab.ColorIndex = 5
+End If
+Next wsh
+ThisWorkbook.SaveCopyAs Filename:=ThisWorkbook.Path & "\" & Format(Date, "mm-dd-yy") & " (" & client & ") " & ThisWorkbook.Name
+ActiveWorkbook.Close
+Application.Quit
+End Sub
