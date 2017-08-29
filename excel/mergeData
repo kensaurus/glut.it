@@ -1,0 +1,73 @@
+'kenjisakuramoto'
+'Merge excel files into one file'
+
+Sub mergeData()
+Dim firstRowHeaders As Boolean
+    Dim fso As Object
+    Dim dir As Object
+    Dim filename As Variant
+    Dim wb As Workbook
+    Dim s As Sheet1
+    Dim thisSheet As Sheet1
+    Dim lastUsedRow As Range
+    Dim file As String
+    
+On Error GoTo ErrMsg
+ 
+    Application.ScreenUpdating = False
+    firstRowHeaders = True 'Change from True to False if there are no headers in the first row
+ 
+    Set fso = CreateObject("Scripting.FileSystemObject")
+ 
+    'Change to the path to the folder containing your Excel files to merge
+    Set dir = fso.Getfolder("C:\Users\governor\Downloads\New Folder")
+ 
+    Set thisSheet = ThisWorkbook.ActiveSheet
+    
+    For Each filename In dir.Files
+        'Open the spreadsheet in ReadOnly mode
+        Set wb = Application.Workbooks.Open(filename, ReadOnly:=True)
+        
+        'Copy the used range (i.e. cells with data) from the opened spreadsheet
+        If firstRowHeaders And i > 0 Then 'Only include headers from the first spreadsheet
+            Dim mr As Integer
+            mr = wb.ActiveSheet.UsedRange.Rows.Count
+            wb.ActiveSheet.UsedRange.Offset(1, 0).Resize(mr - 1).Copy
+        Else
+            wb.ActiveSheet.UsedRange.Copy
+        End If
+          
+         'Paste after the last used cell in the master spreadsheet
+        If Application.Version < "12.0" Then 'Excel 2007 introduced more rows
+            Set lastUsedRow = thisSheet.Range("A65536").End(xlUp)
+        Else
+            Set lastUsedRow = thisSheet.Range("A1048576").End(xlUp)
+        End If
+        
+        'Only offset by 1 if there are current rows with data in them
+        If thisSheet.UsedRange.Rows.Count > 1 Or Application.CountA(thisSheet.Rows(1)) Then
+            Set lastUsedRow = lastUsedRow.Offset(1, 0)
+        End If
+        lastUsedRow.PasteSpecial
+        Application.CutCopyMode = False
+    Next filename
+    
+    ThisWorkbook.Save
+    Set wb = Nothing
+    
+    #If Mac Then
+        'Do nothing. Closing workbooks fails on Mac for some reason
+    #Else
+        'Close the workbooks except this one
+        For Each filename In dir.Files
+            file = Right(filename, Len(filename) - InStrRev(filename, Application.PathSeparator, , 1))
+            Workbooks(file).Close SaveChanges:=False
+        Next filename
+    #End If
+    
+    Application.ScreenUpdating = True
+ErrMsg:
+    If Err.Number <> 0 Then
+        MsgBox "There was an error. Please try again. [" & Err.Description & "]"
+    End If
+End Sub
