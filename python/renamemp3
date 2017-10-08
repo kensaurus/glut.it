@@ -1,0 +1,22 @@
+import os
+import string
+import re
+
+"""
+Renames files in directory
+kenji
+http://glut.it
+"""
+
+path = os.getcwd()
+files = os.listdir(path)
+
+for file in files:
+    fname, ext = os.path.splitext(file)
+    fname = fname.lower().replace("[mp3clan]", "").replace("amp;", "&").replace("(", "( ").replace("[", "[ ").replace("( ", "(").replace("[ ", "[")
+    fname = re.sub(' +', ' ', fname)
+    fname = fname.strip()
+    fname = string.capwords(fname)
+    os.rename(file, fname + ext)
+    print(file)
+input("Enter to continue...")
