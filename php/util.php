@@ -18,6 +18,9 @@ function validateProfile() {
 	if ( strpos($_POST['email'],'@')== false){
 		return "Email must have an at-sign (@)";
 	}
+	if (!is_numeric($_POST['year'])){
+		return "Year need to be in numbers";
+	}
 }
 
 function validatePos() {
