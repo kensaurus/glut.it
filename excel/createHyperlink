@@ -1,0 +1,30 @@
+'Create hyperlinks to floorplan
+Sub CreateHyperlink()
+    Application.ScreenUpdating = False
+    On Error Resume Next
+    Dim ws As Worksheet: Set ws = Sheets("SUMMARY")
+    'Check
+    Dim lastRow As Long
+    lastRow = ws.Cells(Rows.Count, 1).End(xlUp).Row
+    Dim portRange As Excel.Range: Set portRange = ws.Range("C2:C" + CStr(lastRow))
+    Dim pageRange As Excel.Range
+    Dim foundCell As Range, cell As Excel.Range
+    Dim foundAdd As String, currAdd As String, floor As String
+    For Each cell In portRange.Cells:
+        floor = ws.Range(Replace(Replace(cell.Address, "$", ""), "C", "A"))
+        Set pageRange = Worksheets(floor).UsedRange
+        Set foundCell = pageRange.Find(what:=cell, LookIn:=xlValues, LookAt:=xlWhole, SearchOrder:=xlByRows, SearchDirection:=xlNext, MatchCase:=False)
+        If foundCell Is Nothing Then
+        Else
+            foundAdd = Replace(foundCell.Address, "$", "")
+            ws.Hyperlinks.Add Anchor:=cell, Address:="", SubAddress:="'" & floor & "'!" & foundAdd, TextToDisplay:=cell.Value
+        End If
+    Next cell
+    With portRange
+        With .Font
+        .Size = 18
+        .FontStyle = "Bold"
+        End With
+    End With
+    Application.ScreenUpdating = True
+End Sub
