@@ -19,73 +19,90 @@ if(!isset($_REQUEST['profile_id'])){
 	return;
 }
 
-// Clear out the old position entries
-$stmt = $pdo->prepare('DELETE FROM position
-WHERE profile_id=:pid');
-$stmt->execute(array( ':pid' => $_REQUEST['profile_id']));
-
-// Insert the position entries
-$rank = 1;
-for($i=1; $i<=9; $i++) {
-	if ( ! isset($_POST['year'.$i]) ) continue;
-	if ( ! isset($_POST['desc'.$i]) ) continue;
-	$year = $_POST['year'.$i];
-	$desc = $_POST['desc'.$i];
-	$stmt = $pdo->prepare('INSERT INTO Position
-	(profile_id, rank, year, description)
-	VALUES ( :pid, :rank, :year, :desc)');
-	$stmt->execute(array(
-	':pid' => $_REQUEST['profile_id'],
-	':rank' => $rank,
-	':year' => $year,
-	':desc' => $desc)
-	);
-	$rank++;
-}
-
-//Incoming data
-if ( isset($_POST['first_name']) || isset($_POST['last_name']) || isset($_POST['email']) || isset($_POST['headline']) || isset($_POST['summary'])) {
-	$msg = validateProfile();
-	if (is_string($msg)){
-		$_SESSION['error'] = $msg;
-		header("Location: edit.php?profile_id=".$_REQUEST["profile_id"]);
+	//Load the Profile
+	$stmt = $pdo->prepare('SELECT * FROM Profile
+		WHERE profile_id = :pid AND user_id = :id');
+	$stmt->execute(array( ':pid' => $_REQUEST['profile_id'],
+		':id' => $_SESSION['user_id']));
+	$profile = $stmt->fetch(PDO::FETCH_ASSOC);
+	if($profile === false) {
+		$_SESSION['error'] = 'Could not load profile';
+		header('Location: index.php');
 		return;
 	}
-	else{
-    $sql = "UPDATE profile SET first_name=:fn, last_name=:ln, email=:em, headline=:he, summary=:su 
-	WHERE user_id=:id AND profile_id=:pid";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute(array(
-		':pid' => $_REQUEST['profile_id'],
-        ':fn' => $_POST['first_name'],
-        ':ln' => $_POST['last_name'],
-		':em' => $_POST['email'],
-		':id' => $_SESSION['user_id'],
-        ':he' => $_POST['headline'],
-        ':su' => $_POST['summary']));
-    $_SESSION['success'] = 'Record edited';
-    header( 'Location: index.php' ) ;
-    return;
+	
+	//post request
+	//validating data
+	if ( isset($_POST['first_name']) && isset($_POST['last_name']) && isset($_POST['email']) 
+     && isset($_POST['headline']) && isset($_POST['summary']) ) {
+  
+		$msg = validateProfile();
+     	if( is_string($msg) ) {
+     		$_SESSION['error'] = $msg;
+     		header("Location: edit.php?profile_id=".$_REQUEST["profile_id"]);
+     		return;
+     	}
+
+     	//Validate position entries if present
+     	$msg = validatePos();
+     	if( is_string($msg) ) {
+     		$_SESSION['error'] = $msg;
+     		header("Location: edit.php?profile_id=".$_REQUEST["profile_id"]);
+     		return;
+     	}
+
+     	$stmt = $pdo->prepare('UPDATE Profile SET 
+     		first_name = :fn, last_name = :ln,
+     		email = :em, headline = :he, summary = :su
+     		WHERE profile_id = :pid AND user_id = :id');
+     	$stmt->execute(array(
+     		':pid' => $_REQUEST['profile_id'],
+     		':id' => $_SESSION['user_id'],
+	        ':fn' => $_POST['first_name'],
+	        ':ln' => $_POST['last_name'],
+	        ':em' => $_POST['email'],
+	    	':he' => $_POST['headline'],
+	    	':su' => $_POST['summary'])
+     	);
+
+		//Clear out the old position entries
+		$stmt = $pdo->prepare('DELETE FROM Position 
+			WHERE profile_id = :pid');
+		$stmt->execute(array( ':pid' => $_REQUEST['profile_id']));
+		//print_r($_POST);
+		//Insert the position entries
+		$rank = 1;
+		for ($i=1; $i <= 9; $i++) { 
+			if(! isset($_POST['year'.$i]) ) {
+				$yy = $_POST['year'.$i.'_'];
+				error_log("year $i is empty, skipping: $yy");
+				continue;
+			}
+			if(! isset($_POST['desc'.$i]) ) {
+				error_log("desc $i is empty, skipping");
+				continue; 
+			}
+			$year = $_POST['year'.$i];
+			$desc = $_POST['desc'.$i];
+
+			$stmt = $pdo->prepare('INSERT INTO Position
+				(profile_id, rank, year, description)
+				VALUES ( :pid, :rank, :year, :desc)');
+			$stmt->execute(array(
+				':pid' => $_REQUEST['profile_id'],
+				':rank' => $rank,
+				':year' => trim($year),
+				':desc' => trim($desc))
+			);
+			$rank++;
 		}
-}
-
-$stmt = $pdo->prepare("SELECT * FROM profile where profile_id=:pid and user_id=:id");
-$stmt->execute(array(':pid' => $_REQUEST['profile_id'], ':id' => $_SESSION['user_id']));
-$row = $stmt->fetch(PDO::FETCH_ASSOC);
-if ($row === false) {
-    $_SESSION['error'] = 'Could not load profile';
-    header( 'Location: index.php' ) ;
-    return;
-}
-
-$fn = htmlentities($row['first_name']);
-$ln = htmlentities($row['last_name']);
-$em = htmlentities($row['email']);
-$he = htmlentities($row['headline']);
-$su = htmlentities($row['summary']);
-$id = $row['user_id'];
-
-$positions = loadPos($pdo, $_REQUEST['profile_id']);
+ 	
+		$_SESSION['success'] = "Profile updated";
+		header("Location: index.php");
+		return;
+	}
+	//load up the positions rows
+	$positions = loadPos($pdo, $_REQUEST['profile_id']);
 ?>
 
 <html>
@@ -95,67 +112,65 @@ $positions = loadPos($pdo, $_REQUEST['profile_id']);
 </head>
 <body>
 <div class="container">
-<p>Editing profile for <?= htmlentities($_SESSION['name']); ?></p>
+<h1>Editing Profile for <?= htmlentities($_SESSION['name']) ?> </h1>
 <?php flashMessages(); ?>
 <form method="post" action="edit.php">
+<input type="hidden" name="profile_id" value=" <?= htmlentities($_GET['profile_id']); ?>"/>
 <p>First Name:
-<input type="text" name="first_name" value="<?=$fn?>"></p>
+<input type="text" name="first_name" value="<?= htmlentities($profile['first_name']); ?>"></p>
 <p>Last Name:
-<input type="text" name="last_name" value="<?=$ln?>"></p>
+<input type="text" name="last_name" value="<?= htmlentities($profile['last_name']); ?>"></p>
 <p>Email:
-<input type="text" name="email" value="<?=$em?>"></p>
+<input type="text" name="email" value="<?= htmlentities($profile['email']); ?>"></p>
 <p>Headline:
-<input type="text" name="headline" value="<?=$he?>"></p>
-<p>Summary: <br>
-<textarea name="summary" rows ="5" cols="60" value="<?=$su?>"></textarea>
-<?php
-$pos = 0;
-echo('<p>Position: <input type="submit" value="+" id="addPos">'."\n");
-echo('<div id="position_fields>'."\n");
-foreach ($positions as $position){
-	$pos++;
-	echo('<div id="position'.$pos.'">'."\n");
-	echo('<p>Year: <input type="text" name="year'.$pos.'" value="'.$position['year'].'" />'."\n");
-	echo('<input type ="button" value="-" ');
-	echo('onclick="$(\'#position'.$pos.'\').remove();return false;">'."\n");
-	echo(htmlentities($position['description'])."\n");
-	echo("\n</textarea>\n</div>\n");
-}
-echo("</div></p>\n");
-?>
+<input type="text" name="headline" value="<?= htmlentities($profile['headline']); ?>"></p>
+<p>Summary:<br>
+<input type="text" name="summary" rows="8" cols="80" value="<?= htmlentities($profile['summary']); ?>"></p>
 
-</div>
-<input type="hidden" name="user_id" value="<?=$id?>">
-<input type="hidden" name="profile_id" value="<?= htmlentities($_GET['profile_id']); ?>">
-<p><input type="submit" value="Save"/>
-<a href="index.php">Cancel</a></p>
+<?php
+	$pos = 0;
+	echo('<p>Position: <input type="submit" id="addPos" value="+">'."\n");
+	echo('<div id="position_fields">'."\n");
+	foreach ($positions as $position) {
+		$pos++;
+		echo('<div id="position'.$pos.'">'."\n");
+		echo('<p>Year: <input type="text" name="year'.$pos.'" ');
+		echo(' value="'.$position['year'].'" />'."\n");
+		echo('<input type="button" value="-" ');
+		echo('onclick="$(\'#position'.$pos.'\').remove();return false;">'."\n");
+		echo("</p>\n");
+		echo('<textarea name="desc'.$pos.'" row="8" cols="80">'."\n");
+		echo(htmlentities($position['description'])."\n");
+		echo("\n</textarea>\n</div>\n");
+	}
+	echo("</div></p>\n");
+ ?>
+<p>
+<input type="hidden" name="profile_id" value="<?= ($_GET['profile_id']); ?>"/>
+<input type="submit" value="Save"/>
+<input type="submit" name="cancel" value="Cancel"/>
 </form>
 </div></body></html>
 
 <script>
-countPos=<?=$positions?>;
-$(document).ready(function(){
-	window.console && console.log('Document ready...');
-	$('#addPos, #removePos').click(function(event){
-		event.preventDefault();
-		if($(event.target).attr('id')=='addPos'){
-			if(countPos>=9){
-				alert('Maximum entries exceeded...');
+	countPos = <?= $pos ?>;
+	$(document).ready(function(){
+		window.console && console.log('Document ready called');
+		$('#addPos').click(function(event){
+			event.preventDefault();
+			if ( countPos >= 9 ) {
+				alert("Maximum of nine position entries exceeded");
 				return;
 			}
 			countPos++;
-			window.console && console.log("Adding position"+countPos);
+			window.console && console.log("Adding position "+countPos);
 			$('#position_fields').append(
 				'<div id="position'+countPos+'"> \
-				Year: <input type="text" name="year"> \
-				<input type="submit" value="-" id="removePos" onclick="$(\'#position'+countPos+'\').remove();return false;"></p> \
-				<textarea id="desc'+countPos+'" rows="5" cols="60" name="description"></textarea> \
-				</div>');			
-		}
-		else if($(event.target).attr('id')=='removePos'){
-			countPos--;
-			window.console && console.log("Remove position"+countPos);
-		}
+				<p>Year: <input type="text" name="year'+countPos+'"/> \
+				<input type="button" value="-" \
+				onclick="$(\'#position'+countPos+'\').remove();return false;"></p> \
+				<textarea name="desc'+countPos+'" rows="8" cols="80"></textarea>\
+				</div>');
+		});
 	});
-});
 </script>
