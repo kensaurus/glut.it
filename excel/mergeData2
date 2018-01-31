@@ -1,0 +1,38 @@
+Sub mergeData()
+    On Error Resume Next
+    Application.DisplayAlerts = False
+    Application.ScreenUpdating = False
+    idData = Application.InputBox("Data Sheet Name:", "JRI - ITS", "Infra related")
+    Dim ws As Worksheet: Set ws = Worksheets(idData)
+    Dim lastRow As Long
+    lastRow = ws.Cells(Rows.Count, 1).End(xlUp).Row
+    Dim idRange As Range: Set idRange = ws.Range("A2:A" + CStr(lastRow))
+    Dim stringPos As Integer
+    Dim cell As Range
+
+    For Each cell In idRange
+    stringPos = InStr(1, cell, "\")
+        If stringPos = 0 Then
+            cell.Offset(0, 7) = cell
+            'cell.Offset(0, 9) = "Local"
+        Else
+            cell.Offset(0, 10) = Mid(cell, 1, stringPos - 1)
+            cell.Offset(0, 7) = Mid(cell, stringPos + 1)
+            cell.Offset(0, 9) = "Domain"
+        End If
+    Next cell
+    'ID Type
+    Range("D1:D" + CStr(lastRow)).Copy
+    Range("I1").PasteSpecial Paste:=xlPasteValues
+'    'Server Name
+    Range("B1:B" + CStr(lastRow)).Copy
+    Range("L1").PasteSpecial Paste:=xlPasteValues
+'    'Server Type
+    Range("C1:C" + CStr(lastRow)).Copy
+    Range("M1").PasteSpecial Paste:=xlPasteValues
+    Range("H1") = "ID"
+    Range("J1") = "Local/Domain"
+    Range("K1") = "Domain"
+    Range("H1:K1").ColumnWidth = 15
+    ws.Range("H2:M" + CStr(lastRow)).Select
+End Sub
