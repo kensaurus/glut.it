@@ -1,0 +1,4 @@
+Private Sub Worksheet_SelectionChange(ByVal Target As Range)
+Cells.Interior.ColorIndex = xlNone
+Rows(Target.Row).Interior.ColorIndex = 4
+End Sub
