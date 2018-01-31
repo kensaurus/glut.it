@@ -1,0 +1,8 @@
+Private Sub Worksheet_FollowHyperlink(ByVal Target As Hyperlink)
+    Dim i As Long        
+    For i = 1 To ThisWorkbook.Sheets.Count            
+    Sheets(i).UsedRange.Interior.ColorIndex = -4142            
+    Next        
+    ActiveSheet.Cells.Interior.ColorIndex = red        
+    Selection.Cells.Interior.ColorIndex = 6    
+    End Sub
