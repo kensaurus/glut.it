@@ -65,10 +65,7 @@ if(isset($_POST['delete']) && isset($_POST['user_id'])){
 <div class="container">
 <h1>Adding Profile for <?= $_SESSION['name'] ?></h1>
 <?php
-if(isset($_SESSION['error'])){
-	echo('<p style="color: red;">'.htmlentities($_SESSION['error'])."</p>\n");
-	unset($_SESSION['error']);
-}
+flashMessages();
 ?>
 <form method="post">
 <p>First Name:
