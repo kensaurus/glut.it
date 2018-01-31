@@ -1,0 +1,66 @@
+'Import sys_user.csv from ServiceNow
+Sub Import()
+    Application.ScreenUpdating = False
+    On Error Resume Next
+    Dim wb1 As Workbook, wb2 As Workbook, Name As String, FilePath As String
+    Dim currentColumn As Integer, columnHeading As String
+    Name = Application.InputBox("File Name", "Import", "sys_user.csv")
+    FilePath = ThisWorkbook.Path & "\" & Name
+    Set wb1 = Application.ActiveWorkbook
+    Set wb2 = Workbooks.Open(Filename:=ThisWorkbook.Path & "\" & Name)
+    'Copy data
+    wb2.Sheets(1).Copy Before:=wb1.Sheets(2)
+    'Keep wanted columns
+    For currentColumn = ActiveSheet.UsedRange.Columns.Count To 1 Step -1
+        columnHeading = ActiveSheet.UsedRange.Cells(1, currentColumn).Value
+        Select Case columnHeading
+            Case "department", "vip", "phone", "u_giam", "first_name", "last_name", "title"
+            Case Else
+                ActiveSheet.Columns(currentColumn).Delete
+        End Select
+    Next
+    
+    Dim lastRow As Long
+    lastRow = wb1.Sheets(2).Cells(Rows.Count, 1).End(xlUp).Row
+    'Title
+    Range("B1:B" + CStr(lastRow)).Copy
+    Range("H1").PasteSpecial Paste:=xlPasteValues
+    'GIAM
+    Range("E1:E" + CStr(lastRow)).Copy
+    Range("I1").PasteSpecial Paste:=xlPasteValues
+    'VIP
+    Range("C1:C" + CStr(lastRow)).Copy
+    Range("J1").PasteSpecial Paste:=xlPasteValues
+    'Dept
+    Range("A1:A" + CStr(lastRow)).Copy
+    Range("K1").PasteSpecial Paste:=xlPasteValues
+    Range("A1:C" + CStr(lastRow)).Delete
+    Range("B1:B" + CStr(lastRow)).Delete
+    'Delete all containing certain ZZ_
+    With ActiveSheet
+        .AutoFilterMode = False
+        With Range("B2", Range("B" & Rows.Count).End(xlUp))
+            .AutoFilter 1, "*ZZ_*"
+            .Offset(1).SpecialCells(12).EntireRow.Delete
+        End With
+        .AutoFilterMode = False
+    End With
+    'Delete all not SNG
+    With ActiveSheet
+        .AutoFilterMode = False
+        With Range("G2", Range("G" & Rows.Count).End(xlUp))
+            .AutoFilter 1, "<>*SNG*"
+            .Offset(1).SpecialCells(12).EntireRow.Delete
+        End With
+        .AutoFilterMode = False
+    End With
+    
+    Range("H2").Select
+    ActiveCell.FormulaR1C1 = "=REPLACE(RC[-7],1,5,)"
+    Selection.AutoFill Destination:=Range("H2:H" + CStr(lastRow))
+    Range("H2:H" + CStr(lastRow)).Copy
+    Range("A2").PasteSpecial Paste:=xlPasteValues
+    
+    wb2.Close savechanges:=False
+    Application.ScreenUpdating = True
+End Sub
