@@ -1,5 +1,3 @@
-#Coursera - Deep Learning - Recurrent Neural Networks
-
 import numpy as np
 from rnn_utils import *
 
