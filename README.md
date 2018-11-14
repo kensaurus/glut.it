@@ -3,4 +3,4 @@
 
 * * https://linkedin.com/kenjisakuramoto
 
-Learning to appreciate knowledge.
+Automation & Data Extraction.
