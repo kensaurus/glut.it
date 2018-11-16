@@ -4,3 +4,6 @@
 * * https://linkedin.com/kenjisakuramoto
 
 Automation & Data Extraction.
+
+hobby:
+* soundcloud_scraper.ipynb
