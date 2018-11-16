@@ -15,7 +15,8 @@ Automation & Data Extraction.
 - [ ] Integrate with Serato DJ song analysis data to provide better song analytics and tagging.
 - [ ] Integrate with YouTube and other song hosting websites to check for relevance and authenticity.
 
-Scraped profile infos 
+**Scraped profile infos** 
 > username, thumbnail, favourited, reposts, tracks, followers, following, comments
-Scraped song infos
+
+**Scraped song infos**
 > title, favourites, reposts, plays, comments, upload date, tag, creator, creator username, thumbnail
