@@ -3,9 +3,7 @@
 
 * * https://linkedin.com/kenjisakuramoto
 
-Automation & Data Extraction.
-
-## My Project:
+## Automation & Data Extraction.
 ### soundcloud_scraper.ipynb
 - [x] To scrape song information and user profiles from soundcloud. 
 
