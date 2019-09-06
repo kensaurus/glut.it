@@ -5,7 +5,7 @@
 
 ## Automation & Data Extraction.
 ### soundcloud_scraper.ipynb
-- [x] To scrape song information and user profiles from soundcloud. 
+- [x] scrape song information. 
 
 **Scraped profile infos** 
 > username, thumbnail, favourited, reposts, tracks, followers, following, comments
