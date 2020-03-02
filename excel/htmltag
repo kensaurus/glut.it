@@ -1,0 +1,16 @@
+Sub aTest()
+    Dim rCell As Range, spl As Variant, i As Long
+    
+    For Each rCell In Selection
+        spl = Split(rCell, Chr(10))
+        For i = LBound(spl) To UBound(spl)
+            spl(i) = Chr(60) & "li" & Chr(62) & spl(i) & Chr(60) & "/li" & Chr(62)
+        Next i
+        rCell = Join(spl, Chr(10))
+    Next rCell
+    Selection.ColumnWidth = 200
+    Selection.EntireRow.AutoFit
+    Selection.EntireColumn.AutoFit
+End Sub
+
+Press Alt+F8 on selected cell and run. This will convert all to <li></li>
